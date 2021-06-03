@@ -64,6 +64,12 @@ const cartReducer = (state, action) => {
         return cart
     }
 
+    if (action.type === 'CLEAR') {
+        localStorage.setItem('cartInfo', JSON.stringify(defaultCartState));
+        return defaultCartState
+
+    }
+
     if (action.type === "LOCAL_STORAGE") {
         const cart = action.items
         return cart
@@ -77,7 +83,6 @@ const CartProvider = props => {
 
     useEffect(() => {
         const storedCartInfo = JSON.parse(localStorage.getItem('cartInfo'))
-        console.log(storedCartInfo)
         dispatchCart({ type: "LOCAL_STORAGE", items: storedCartInfo })
 
     }, [])
@@ -92,13 +97,16 @@ const CartProvider = props => {
         dispatchCart({ type: 'REMOVE_ITEM', id: id })
     }
 
-
+    const clearCart = () => {
+        dispatchCart({ type: 'CLEAR' })
+    }
 
     const cartContext = {
         items: cartState.items,
         totalAmount: cartState.totalAmount,
         addItem: addItemToCartHandler,
-        removeItem: removeItemFromCartHandler
+        removeItem: removeItemFromCartHandler,
+        clearCart
     }
 
     return (
